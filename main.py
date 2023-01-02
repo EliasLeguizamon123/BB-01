@@ -1,12 +1,12 @@
-from bitsoEndpoint import bitsoGetPayload, getTickerUsdToArs, getMyBalance, getFeesForOperate
+from bitsoEndpoints import bitsoGetMyData, getTickerUsdToArs, getMyBalance, getFeesForOperate
 from time import sleep
 
 def main() :
-    bitsoGetPayload()
+    bitsoGetMyData()
+    # getMyBalance()
     while True:
         getTickerUsdToArs()
-        getFeesForOperate()
-        sleep(1)
+        sleep(3)
     
 if __name__ == '__main__':
     main()
