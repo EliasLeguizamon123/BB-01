@@ -25,6 +25,9 @@ lockedUSD = ''
 totalUSD = ''
 # Fees global
 makerFee = 0
+# User Trades and orders
+trades = []
+orders = []
 
 def createHeader (reqPath):
     nonce = str(int(round(time.time() * 1000)))
@@ -53,7 +56,6 @@ def getTickerUsdToArs() :
     response = requests.get('https://api.bitso.com' + reqPath, createHeader(reqPath))
     payload = response.json()['payload']
     # Save globals
-    # usdActualPrice = float(payload['last'])
     book = payload['book']
     high = payload['high']
     low = payload['low']
@@ -89,4 +91,32 @@ def getFeesForOperate() :
     comision = round((float(makerFee) *  usdActualPrice) / 100, 2)
     print('Actual maker fee: ',  makerFee )
     print('la operacion a hacer es el makerFee', makerFee, 'del precio actual USD', usdActualPrice, 'comision: ', comision)
+    
+def getUserTrades(): 
+    global trades
+    reqPath = '/v3/user_trades/?book=usd_ars'
+    response = requests.get('https://api.bitso.com' + reqPath, headers={'Authorization': createHeader(reqPath)})
+    payload = response.json()['payload']
+    trades = payload
+    print('My trades: ' + colored(trades, 'yellow'))
+    
+def getUserOrders() :
+    global orders
+    reqPath = '/v3/open_orders/?book=usd_ars'
+    response = requests.get('https://api.bitso.com' + reqPath, headers={'Authorization': createHeader(reqPath)})
+    payload = response.json()['payload']
+    print(payload)
+    
+def cancelAllOrders() :
+    reqPath = '/v3/orders/all'
+    response = requests.delete('https://api.bitso.com' + reqPath, headers={'Authorization': createHeader(reqPath)} )
+    payload = response.json()['payload']
+    print(colored('Orders deleted: ' + payload, 'red'))
+    
+def placeAnOrder( side, type): 
+    reqPath = '/v3/orders'
+    data={'book': 'usd_ars', 'side': side, 'type': type}
+    response = requests.post('https://api.bitso.com' + reqPath, data, headers={'Authorization': createHeader(reqPath)})
+    payload = response.json()['payload']
+    print('order placed successfully: ', payload)
     
