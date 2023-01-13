@@ -78,6 +78,7 @@ def getMyBalance() :
     payload = response.json()['payload']
     balanceUSD = next(item for item in payload['balances'] if item['currency'] == 'usd')
     balanceARS = next(item for item in payload['balances'] if item['currency'] == 'ars')
+    # print('balance USD: ', balanceUSD, 'balance ARS: \n', balanceARS)
 # OBJECT Balance
 # {currency: 'ars | usd', available: num, locked: num, total: num, pending_deposit: num, pending_withdrawal: num}
 
@@ -113,10 +114,18 @@ def cancelAllOrders() :
     payload = response.json()['payload']
     print(colored('Orders deleted: ' + payload, 'red'))
     
-def placeAnOrder( side, type): 
+def placeAnOrder(side, type): 
     reqPath = '/v3/orders'
     data={'book': 'usd_ars', 'side': side, 'type': type}
     response = requests.post('https://api.bitso.com' + reqPath, data, headers={'Authorization': createHeader(reqPath)})
     payload = response.json()['payload']
     print('order placed successfully: ', payload)
     
+def scaldingOrders () :
+    global balanceARS, balanceUSD
+    getMyBalance()
+    availableUSD = round(float(balanceUSD['available']), 2)
+    availableARS = round(float(balanceARS['available']), 2)
+    if availableUSD <= 1 and availableARS >= 100 :
+        buyUSD = availableARS / 2
+        placeAnOrder('buy', 'market')
