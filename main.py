@@ -8,9 +8,10 @@ def main() :
     getTickerUsdToArs()
     # Get my balance
     scaldingOrders()
+    # getFeesForOperate()
     # while True:
     #     # getTickerUsdToArs()
-    #     getUserOrders()
+    # getUserOrders()
     #     sleep(3)
     
 if __name__ == '__main__':
